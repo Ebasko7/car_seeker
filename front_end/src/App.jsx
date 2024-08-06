@@ -1,20 +1,20 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
+import { Outlet } from 'react-router-dom'
 import './App.css'
 import Header from './components/Header'
-import MainPageSection from './components/MainPageSection'
-import AutoCard from './components/AutoCard'
+
 
 function App() {
+  const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   return (
     <>
-    <Header />
-    <MainPageSection />
-    <h1 className='text-center text-xl'>FEATURED CARS</h1>
-    <AutoCard />
+      <Header />
+      <Outlet context={{ user, setUser }}/>
     </>
   )
 }

@@ -1,8 +1,15 @@
-import React from 'react'
+import React from 'react';
+
+import MainPageSection from '../components/MainPageSection.jsx'
+import AutoCard from '../components/AutoCard.jsx'
+
 
 function Homepage() {
   return (
-    <div>Homepage</div>
+    <>
+    <MainPageSection />
+    <AutoCard />
+    </>
   )
 }
 
