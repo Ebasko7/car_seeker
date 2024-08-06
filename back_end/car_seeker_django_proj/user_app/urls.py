@@ -8,4 +8,5 @@ urlpatterns = [
     path("logout/", Log_out.as_view(), name="logout"),
     path("info/", Info.as_view(), name="info"),
     path("master-signup/", Master_Sign_Up.as_view(), name="master")
+    path("garage/", include('garage_app.urls'))
 ]

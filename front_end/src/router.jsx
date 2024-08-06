@@ -1,8 +1,13 @@
 // router.jsx
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import HomePage from "./components/HomePage";
-import Contact from "./components/Contact";
+import HomePage from "./pages/HomePage";
+import GaragePage from "./pages/GaragePage";
+import BountyListPage from "./pages/BountyListPage"
+import MarketplacePage from "./pages/MarketplacePage";
+import NotFoundPage from "./pages/NotFoundPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 
 const router = createBrowserRouter([
   {
@@ -14,10 +19,27 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: "contact",
-        element: <Contact />,
+        path: "login/",
+        element: <LoginPage />
       },
+      {
+        path: "signup/",
+        element: <SignupPage />
+      },
+      {
+        path: "garage/",
+        element: <GaragePage />,
+      },
+      {
+        path: "bountylist/",
+        element: <BountyListPage />,
+      },
+      {
+        path: "marketplace/",
+        element: <MarketplacePage />,
+      }
     ],
+    errorElement: <NotFoundPage/>
   },
 ]);
 
