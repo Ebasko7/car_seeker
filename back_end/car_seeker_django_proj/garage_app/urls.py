@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import Garage
+from .views import GarageView
 
 urlpatterns = [
-    path('', Garage.as_view(), ),
+    path('', GarageView.as_view(), ),
 ]
 
 

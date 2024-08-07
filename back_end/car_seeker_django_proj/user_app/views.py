@@ -32,17 +32,15 @@ class Log_in(APIView):
         else:
             return Response("No user matching credentials", status=HTTP_404_NOT_FOUND)
         
-class Info(APIView):
+class TokenReq(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-
+        
+class Info(TokenReq):
     def get(self, request):
         return Response({"email": request.user.email})
 
-class Log_out(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
+class Log_out(TokenReq):
     def post(self, request):
         request.user.auth_token.delete()
         return Response(status=HTTP_204_NO_CONTENT)
