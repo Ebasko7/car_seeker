@@ -9,6 +9,7 @@ const navigation = [
   { name: 'Home', to: '/' },
   { name: 'Marketplace', to: '/marketplace' },
   { name: 'Bounty List', to: '/bountylist' },
+  { name: 'Garage', to: '/garage' },
 ]
 
 export default function Header() {
