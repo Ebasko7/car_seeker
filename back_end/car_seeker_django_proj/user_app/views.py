@@ -13,21 +13,22 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from garage_app.models import Garage
+from bounty_list_app.models import Bounty_list
 
 
     
 class Sign_up(APIView):
     def post(self, request):
-            with transaction.atomic():
-                request.data["username"] = request.data["email"]
-                app_user = User.objects.create_user(**request.data)
-                Garage.objects.create(owner=app_user)
-                token = Token.objects.create(user=app_user)
-                return Response(
+        with transaction.atomic():
+            request.data["username"] = request.data["email"]
+            app_user = User.objects.create_user(**request.data)
+            Garage.objects.create(owner=app_user)
+            Bounty_list.objects.create(user=app_user)
+            token = Token.objects.create(user=app_user)
+            return Response(
                     {"username": app_user.email, "token": token.key},
                     status=HTTP_201_CREATED
                 )
-
 
 class Log_in(APIView):
     def post(self, request):
