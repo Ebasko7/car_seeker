@@ -9,16 +9,16 @@ class Garage(models.Model):
         return f"Garage owned by {self.owner.username}"
 
 class GaragedCar(models.Model):
-    make = models.CharField(max_length=100)
-    model = models.CharField(max_length=100)
-    year = models.IntegerField(
+    make = models.CharField(max_length=100, default='Ford')
+    model = models.CharField(max_length=100, default='Mustang')
+    year = models.IntegerField( default = 2017,
         validators=[
             MinValueValidator(1900),
             MaxValueValidator(2100)
         ]
     )
-    VIN = models.CharField(max_length=17, unique=True)
-    services = models.TextField()
+    VIN = models.CharField(max_length=17, unique=False, default='XXX-XXX-XXX-XXX')
+    services = models.TextField(default='list of services:')
     garage = models.ForeignKey(Garage, on_delete=models.CASCADE, related_name='cars')
 
     def __str__(self):

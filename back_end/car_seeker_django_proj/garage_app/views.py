@@ -8,6 +8,7 @@ from rest_framework.status import (
     HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
+    HTTP_404_NOT_FOUND
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
@@ -18,25 +19,75 @@ from .serializers import GaragedCarSerializer, GarageSerializer
 
 
 class GarageView(TokenReq):
-    def get (self, request):
+    def get(self, request):
         user = request.user
-        garage = get_object_or_404(Garage.objects.get(owner=user))
-        serialized_garage = GarageSerializer(garage)
-        print(serialized_garage)
-        return Response(serialized_garage.data)
+        try:
+            garage = get_object_or_404(Garage, owner=user)
+            serialized_garage = GarageSerializer(garage)
+            return Response(serialized_garage.data, status=HTTP_200_OK)
+        except Garage.DoesNotExist:
+            return Response({"error": "Garage not found for this user"}, status=HTTP_404_NOT_FOUND)
     
 
+class GaragedCarView(TokenReq):
 
-#VIEW OF CARS IN GARAGE(GET)
+    def get(self, request):
+        user = request.user
+        cars = GaragedCar.objects.filter(garage__owner=user)
+        serializer = GaragedCarSerializer(cars, many=True)
+        print(serializer)
+        return Response(serializer.data, status=HTTP_200_OK)
 
-#VIEW TO ADD CAR (POST). This will take in a VIN and call the CARAPI to populate Cardata. 
-    
+
     def post(self, request):
-        user = request.user 
-        #data = request to carAPI 
+        user = request.user
+        print(f'USER: {user}')
+        try:
+            garage = Garage.objects.get(owner=user)
+            print(f'GARAGE: {garage}')
+        except Garage.DoesNotExist:
+            return Response({"error": "User does not have a garage"}, status=HTTP_400_BAD_REQUEST)
+        
+        data = request.data.copy()
+        print(f'DATA: {data}')
+        data['garage'] = garage.id
+        
+        serializer = GaragedCarSerializer(data=data)
+        print(f'GARAGED CAR SERIALIZER: {serializer}')
+        if serializer.is_valid():
+            serializer.save()
+            print('NEW CAR SAVED')
+            return Response(serializer.data, status=HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
-#VIEW TO UPDATE A CAR (PUT). This view will take in user text to update serviceslist.
+    def put(self, request, car_id):
+        user = request.user
+        try:
+            car = GaragedCar.objects.get(id=car_id, garage__owner=user)
+            serializer = GaragedCarSerializer(car, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+        except GaragedCar.DoesNotExist:
+            return Response({"error": "Car not found or you don't have permission"}, status=HTTP_404_NOT_FOUND)
 
-#VIEW TO DELETE A CAR (DELETE). 
+    def delete(self, request, car_id):
+        user = request.user
+        try:
+            car = GaragedCar.objects.get(id=car_id, garage__owner=user)
+            print(car)
+        except GaragedCar.DoesNotExist:
+            return Response({"error": "Car not found or you don't have permission"}, status=HTTP_404_NOT_FOUND)
+        
+        car.delete()
+        print('CAR DELETED')
+        return Response(status=HTTP_204_NO_CONTENT)
+        
+
+
+
+
 
 

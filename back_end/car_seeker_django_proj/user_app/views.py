@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db import transaction
 from django.contrib.auth import authenticate
 from .models import User
 from rest_framework.views import APIView
@@ -11,15 +12,22 @@ from rest_framework.status import (
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from garage_app.models import Garage
 
+
+    
 class Sign_up(APIView):
     def post(self, request):
-        request.data["username"] = request.data["email"]
-        app_user = User.objects.create_user(**request.data)
-        token = Token.objects.create(user=app_user)
-        return Response(
-            {"user": app_user.email, "token": token.key}, status=HTTP_201_CREATED
-        )
+            with transaction.atomic():
+                request.data["username"] = request.data["email"]
+                app_user = User.objects.create_user(**request.data)
+                Garage.objects.create(owner=app_user)
+                token = Token.objects.create(user=app_user)
+                return Response(
+                    {"username": app_user.email, "token": token.key},
+                    status=HTTP_201_CREATED
+                )
+
 
 class Log_in(APIView):
     def post(self, request):
