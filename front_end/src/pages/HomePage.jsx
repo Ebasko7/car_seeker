@@ -1,14 +1,14 @@
 import React from 'react';
 
 import MainPageSection from '../components/MainPageSection.jsx'
-import AutoCard from '../components/AutoCard.jsx'
+import FeaturedCars from '../components/FeaturedCars.jsx'
 
 
 function Homepage() {
   return (
     <>
     <MainPageSection />
-    <AutoCard />
+    <FeaturedCars />
     </>
   )
 }

@@ -1,8 +1,11 @@
 import React from 'react'
+import SearchCars from '../components/SearchCars.jsx'
 
 function Marketplace() {
   return (
-    <div>Marketplace</div>
+    <>
+    <SearchCars />
+    </>
   )
 }
 
