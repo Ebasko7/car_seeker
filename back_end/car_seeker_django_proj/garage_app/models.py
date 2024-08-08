@@ -18,7 +18,7 @@ class GaragedCar(models.Model):
         ]
     )
     VIN = models.CharField(max_length=17, unique=False, default='XXX-XXX-XXX-XXX')
-    services = models.TextField(default='list of services:')
+    services = models.TextField(default='')
     garage = models.ForeignKey(Garage, on_delete=models.CASCADE, related_name='cars')
 
     def __str__(self):

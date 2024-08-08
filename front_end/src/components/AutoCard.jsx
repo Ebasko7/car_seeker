@@ -14,7 +14,6 @@ export default function AutoCard() {
                 console.error('Error fetching car data:', error);
             }
         };
-
         getCars();
     }, []);
 

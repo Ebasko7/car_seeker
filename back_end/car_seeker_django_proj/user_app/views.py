@@ -14,8 +14,6 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from garage_app.models import Garage
 from bounty_list_app.models import Bounty_list
-
-
     
 class Sign_up(APIView):
     def post(self, request):

@@ -22,7 +22,7 @@ export default function Header() {
           <Link to="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img alt="" src="/src/assets/images/Salracing+-+Pirelli+Supersoft+-+Red.png" className="h-20 w-auto" />
-            <h1 className='font-mono text-xl'>CarSeeker</h1>
+            <h1 className='className="text-6xl font-bold tracking-tight text-black"'>CarSeeker</h1>
           </Link>
         </div>
         <div className="flex lg:hidden">
@@ -37,7 +37,7 @@ export default function Header() {
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
-            <Link key={item.name} to={item.to} className="text-sm font-semibold leading-6 text-gray-900">
+            <Link key={item.name} to={item.to} className="text-lg font-normal leading-6 text-gray-900">
               {item.name}
             </Link>
           ))}
