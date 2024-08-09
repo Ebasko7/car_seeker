@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import axios from "axios";
+import { api } from '../utilities.jsx';
 
 export default function AutoCard() {
     const [cars, setCars] = useState([]);
@@ -7,7 +8,7 @@ export default function AutoCard() {
     useEffect(() => {
         const getCars = async () => {
             try {
-                const response = await axios.get('https://auto.dev/api/listings?apikey=ZrQEPSkKZXJpY2Jhc2tvdmljaEBnbWFpbC5jb20=&category=supercar');
+                const response = await api.get('autodev/');
                 setCars(response.data.records);
                 console.log(response.data.records);
             } catch (error) {
