@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 import { api } from '../utilities.jsx';
 import GarageCar from '../components/GarageCar.jsx';
+import Header from '../components/Header.jsx'
 
 function Garage() {
   const [garageCars, setGarageCars] = useState([]);
@@ -51,6 +52,7 @@ function Garage() {
   if (error) return <p className="text-center mt-4 text-red-500">{error}</p>;
 
   return (
+    
     <div className="container mx-auto px-4">
       <h1 className="text-2xl pt-6 pb-8 font-bold text-center text-blue-600 sm:text-3xl">My Garage</h1>
       
@@ -105,6 +107,7 @@ function Garage() {
         </div>
       )}
     </div>
+    
   );
 }
 

@@ -4,6 +4,7 @@ import MainPageSection from '../components/MainPageSection.jsx'
 import FeaturedCars from '../components/FeaturedCars.jsx'
 
 
+
 function Homepage() {
   return (
     <>

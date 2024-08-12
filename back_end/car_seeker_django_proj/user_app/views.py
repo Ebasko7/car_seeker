@@ -23,6 +23,7 @@ class Sign_up(APIView):
             Garage.objects.create(owner=app_user)
             Bounty_list.objects.create(user=app_user)
             token = Token.objects.create(user=app_user)
+  
             return Response(
                     {"username": app_user.email, "token": token.key},
                     status=HTTP_201_CREATED
@@ -46,6 +47,7 @@ class TokenReq(APIView):
 class Info(TokenReq):
     def get(self, request):
         return Response({"email": request.user.email})
+        
 
 class Log_out(TokenReq):
     def post(self, request):

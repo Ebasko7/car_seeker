@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from "react";
+import { Link } from "react-router-dom"
 import { userRegistration } from '../utilities.jsx';
 
 function Signup() {
@@ -22,8 +23,8 @@ function Signup() {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
           alt="Car seeker logo??"
-          src=""
-          className="mx-auto h-10 w-auto"
+          src="../src/assets/images/911_gt3.webp"
+          className="mx-auto h-13 w-auto"
         />
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Create an Account
@@ -78,7 +79,14 @@ function Signup() {
           </div>
         </form>
       </div>
-    </div>
+      <div className="mt-6 text-center">
+          <h4 className="text-lg font-medium text-gray-900">OR</h4>
+          <Link to="/login" className="mt-2 block text-lg font-medium text-red-700 hover:text-red-800">
+            Login to your account
+          </Link>
+        </div>
+      </div>
+    
   )
 }
 

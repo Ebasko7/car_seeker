@@ -16,16 +16,12 @@ class AutoDevLandingView(APIView):
 
         try:
             response = requests.get(endpoint, params=params)
-            response.raise_for_status()  
-            
             data = response.json()
             return Response(data, status=status.HTTP_200_OK)
         
         except requests.exceptions.RequestException as e:
             error_message = f"Error fetching data from Auto.dev API: {str(e)}"
             return Response({'error': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-
         
 class AutoDevMarketView(APIView):
     def get(self, request):
@@ -60,3 +56,5 @@ class AutoDevMarketView(APIView):
         except requests.exceptions.RequestException as e:
             error_message = f"Error fetching data from Auto.dev API: {str(e)}"
             return Response({'error': error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+      

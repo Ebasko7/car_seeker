@@ -8,11 +8,18 @@ import MarketplacePage from "./pages/MarketplacePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import { userConfirmation } from "./utilities.jsx";
+
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    loader: async ({ request }) => {
+      // Assuming userConfirmation is an async function that checks user authentication
+      const isAuthenticated = await userConfirmation();
+      return { isAuthenticated };
+    },
     children: [
       {
         index: true,
