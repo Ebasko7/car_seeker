@@ -32,6 +32,7 @@ export default function AutoCard() {
                         </button>
                     </div>
                     <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900">{car.year} {car.make} {car.model} | {car.mileage}</p>
+                    <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900">VIN: {car.vin}</p>
                     <p className="pointer-events-none block text-sm font-medium text-gray-500">{car.price}</p>
                     <a href={car.clickoffUrl}
                        target="_blank"
