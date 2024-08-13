@@ -8,6 +8,7 @@ import MarketplacePage from "./pages/MarketplacePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import VinDecoderPage from "./pages/VinDecoderPage";
 import { userConfirmation } from "./utilities.jsx";
 
 
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: "marketplace/",
         element: <MarketplacePage />,
+      },
+      {
+        path: "decoder/",
+        element: <VinDecoderPage />,
       }
     ],
     errorElement: <NotFoundPage/>

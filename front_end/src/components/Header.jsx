@@ -8,6 +8,7 @@ import { userLogOut } from '../utilities.jsx'
 
 const navigation = [
   { name: 'Home', to: '/' },
+  { name: 'VIN Decoder', to: '/decoder'},
   { name: 'Marketplace', to: '/marketplace' },
   { name: 'Bounty List', to: '/bountylist' },
   { name: 'Garage', to: '/garage' },

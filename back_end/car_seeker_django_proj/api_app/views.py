@@ -32,7 +32,7 @@ class AutoDevMarketView(APIView):
         model = request.query_params.get('model').title()
         year = request.query_params.get('year_min')
         price = request.query_params.get('price_max')
-        page = request.query_params.get('page').lower()
+        page = request.query_params.get('page')
         
         params = {
             'apikey': api_key,
