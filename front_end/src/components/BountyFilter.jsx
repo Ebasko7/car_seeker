@@ -8,17 +8,23 @@ export default function BountyFilter() {
     const [model, setModel] = useState('')
     const [year_min, setMinYear] = useState('')
     const [price_max, setPriceMax] = useState('')
+    const [isLoadingFilters, setIsLoadingFilters] = useState(true)
+    const [isLoadingCars, setIsLoadingCars] = useState(false)
 
     const getFilters = async () => {
+        setIsLoadingFilters(true)
         try {
             const response = await api.get('users/bounty/bounty-filters/')
             setFilters(response.data)
         } catch (error) {
             console.error('Could not fetch bounties', error)
+        } finally {
+            setIsLoadingFilters(false)
         }
     }
 
     const getCars = async () => {
+        setIsLoadingCars(true)
         try {
             const results = {}
             for (let filter of filters) {
@@ -35,6 +41,8 @@ export default function BountyFilter() {
             setFilterResults(results);
         } catch (error) {
             console.error('Error fetching car data:', error);
+        } finally {
+            setIsLoadingCars(false)
         }
     };
 
@@ -150,41 +158,49 @@ export default function BountyFilter() {
             </form>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                {filters.map((filter) => (
-                    <div key={filter.id} className="mb-8">
-                        <h2 className="text-xl font-bold mb-4">
-                            {filter.make} {filter.model} (Year: {filter.year_min}+, Max Price: ${filter.price_max}) 
-                            <button 
-                                onClick={() => handleDelete(filter.id)}
-                                className="inline-block rounded-md bg-red-600/80 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2"
-                            >
-                                Delete
-                            </button>
-                        </h2>
-                       
-                        <ul role="list" className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-                            {filterResults[filter.id]?.map((car) => (
-                                <li key={car.id} className="relative">
-                                    <div className="group aspect-h-7 aspect-w-10 block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
-                                        <img alt="" src={car.primaryPhotoUrl} className="pointer-events-none object-cover group-hover:opacity-75" />
-                                        <button type="button" className="absolute inset-0 focus:outline-none">
-                                            <span className="sr-only">View details for {car.model}</span>
-                                        </button>
-                                    </div>
-                                    <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900">{car.year} {car.make} {car.model} | {car.mileage}</p>
-                                    <p className="pointer-events-none block text-sm font-medium text-gray-500">{car.price}</p>
-                                    <a href={car.clickoffUrl}
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       className="inline-block rounded-md bg-green-600/80 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                    >
-                                        View
-                                    </a>       
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                ))}
+                {isLoadingFilters ? (
+                    <p className="text-center">Loading filters...</p>
+                ) : (
+                    filters.map((filter) => (
+                        <div key={filter.id} className="mb-8">
+                            <h2 className="text-xl font-bold mb-4">
+                                {filter.make} {filter.model} (Year: {filter.year_min}+, Max Price: ${filter.price_max}) 
+                                <button 
+                                    onClick={() => handleDelete(filter.id)}
+                                    className="inline-block rounded-md bg-red-600/80 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2"
+                                >
+                                    Delete
+                                </button>
+                            </h2>
+                           
+                            {isLoadingCars ? (
+                                <p>Loading cars...</p>
+                            ) : (
+                                <ul role="list" className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+                                    {filterResults[filter.id]?.map((car) => (
+                                        <li key={car.id} className="relative">
+                                            <div className="group aspect-h-7 aspect-w-10 block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
+                                                <img alt="" src={car.primaryPhotoUrl} className="pointer-events-none object-cover group-hover:opacity-75" />
+                                                <button type="button" className="absolute inset-0 focus:outline-none">
+                                                    <span className="sr-only">View details for {car.model}</span>
+                                                </button>
+                                            </div>
+                                            <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900">{car.year} {car.make} {car.model} | {car.mileage}</p>
+                                            <p className="pointer-events-none block text-sm font-medium text-gray-500">{car.price}</p>
+                                            <a href={car.clickoffUrl}
+                                               target="_blank"
+                                               rel="noopener noreferrer"
+                                               className="inline-block rounded-md bg-green-600/80 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                            >
+                                                View
+                                            </a>       
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    ))
+                )}
             </div>
         </>
     )
