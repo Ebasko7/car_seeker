@@ -76,7 +76,7 @@ export default function Header({ user, setUser }) {
               <span className="sr-only">CarSeeker</span>
               <img
                 className="h-8 w-auto"
-                src="/api/placeholder/32/32"
+                src="../src/assets/images/wheel.png"
                 alt="CarSeeker"
               />
             </Link>

@@ -6,7 +6,7 @@ export default function AutoCard() {
     const [page, setPage] = useState(1)
     const [make, setMake] = useState('')
     const [model, setModel] = useState('')
-    const [min_year, setMinYear] = useState('')
+    const [year_min, setMinYear] = useState('')
     const [price_max, setPriceMax] = useState('')
   
     const getCars = async () => {
@@ -15,7 +15,7 @@ export default function AutoCard() {
                 params: {
                     make,
                     model,
-                    min_year,
+                    year_min,
                     price_max,
                     page
                 }
@@ -42,7 +42,7 @@ export default function AutoCard() {
             case 'model':
                 setModel(value);
                 break;
-            case 'min_year':
+            case 'year_min':
                 setMinYear(value);
                 break;
             case 'price_max':
@@ -84,8 +84,8 @@ export default function AutoCard() {
                     />
                     <input
                         type="number"
-                        name="min_year"
-                        value={min_year}
+                        name="year_min"
+                        value={year_min}
                         onChange={handleInputChange}
                         placeholder="Minimum Year"
                         className="px-3 py-2 border rounded-md flex-grow"

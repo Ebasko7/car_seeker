@@ -30,7 +30,7 @@ class AutoDevMarketView(APIView):
         
         make = request.query_params.get('make').title()
         model = request.query_params.get('model').title()
-        year = request.query_params.get('year')
+        year = request.query_params.get('year_min')
         price = request.query_params.get('price_max')
         page = request.query_params.get('page').lower()
         
@@ -38,7 +38,7 @@ class AutoDevMarketView(APIView):
             'apikey': api_key,
             'make': make,
             'model': model,
-            'year': year,
+            'year_min': year,
             'price_max': price,
             'page': page,
         }

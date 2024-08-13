@@ -15,8 +15,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    loader: async ({ request }) => {
-      // Assuming userConfirmation is an async function that checks user authentication
+    loader: async () => {
       const isAuthenticated = await userConfirmation();
       return { isAuthenticated };
     },
