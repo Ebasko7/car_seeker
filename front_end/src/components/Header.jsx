@@ -1,3 +1,4 @@
+//HEADER PERSISTS ACROSS ALL OTHER REACT PAGES, IT IS NOT A CHILD OF APP, IT EXISTS AT THE TOP LEVEL OF THE APPLICATION.
 'use client'
 import { useState } from 'react'
 import { Dialog, DialogPanel } from '@headlessui/react'
@@ -5,7 +6,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
 import { userLogOut } from '../utilities.jsx'
 
-
+//EACH OBJECT IN THIS ARRAY IS MAPPED TO IN THE RETURN SECTION AND LINKS TO THE PATH IN THE 'TO' FIELD.
 const navigation = [
   { name: 'Home', to: '/' },
   { name: 'VIN Decoder', to: '/decoder'},
@@ -14,13 +15,20 @@ const navigation = [
   { name: 'Garage', to: '/garage' },
 ]
 
+//USER AND SETUSER ARE PASSED IN AS PROPS FROM APP.JSX. IF USER = TRUE, THEY ARE AUTHENTICATED.
+//THIS IS A TAILWIND NAVBAR COMPONENT, WHEN SCALED TO WITHIN MOBILE DEVICE SIZE, A BREAKPOINT WILL ALLOW MOBILEMENU TO TOGGLE BETWEEN TRUE OR FALSE
+//IF TRUE, THE MENU TAKES THE ENTIRE SCREEN, IF FALSE THE MENU IS COLLAPSED.
 export default function Header({ user, setUser }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+//THIS LOGS THE USER OUT VIA THE LOGOUT FUNCTION IN UTILITIES.JSX. USER IS RESET TO NULL, RESTRICTING ACCESS TO PUBLIC ROUTES (LOGIN AND SIGNUP) ONLY
   const handleLogout = () => {
-    userLogOut();
-    setUser(null);
+    userLogOut()
+    setUser(null)
   }
 
+//REGARDLESS OF USER STATE, THIS BUTTON WILL NAVIGATE TO LOGIN PAGE. IT DISPLAYS LOG IN IF USER IS FALSE (NOT AUTHENTICATED) OR LOG OUT IF USER IS AUTHENTICATED
+//HANDLE LOGOUT IS CALLED AND USER IS LOGGED OUT
   const AuthButton = () => (
     <Link
       to="/login"
@@ -33,6 +41,8 @@ export default function Header({ user, setUser }) {
 
   return (
     <header className="bg-white">
+
+  {/*THE BELOW MAPS THE NAVIGATION OBJECTS AT TOP OF PAGE TO LINKED REACT PAGES*/}
       <nav className="bg-blue-600/80 mx-auto flex max-w-9xl items-center justify-between p-6 lg:px-8" aria-label="Global">
         <div className="flex-1 flex items-center justify-between">
           <Link to="/" className="flex items-center">

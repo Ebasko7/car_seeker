@@ -1,5 +1,9 @@
+//A BOUNTY FILTER EQUATES TO A USER'S SAVED SEARCH PARAMETERS. THESE ARE EMPLOYED AS A COMPONENT ON BOUNTYPAGE.JSX. 0 OR MANY BOUNTY FILTERS EXIST ON THE BOUNTY PAGE.
+
 import { useState, useEffect } from "react"
-import { api } from '../utilities.jsx';
+
+//CALLS TO THIS API--AN AXIOS INSTANCE--ARE DIRECTED TO DJANGO BACKEND.
+import { api } from '../utilities.jsx'
 
 export default function BountyFilter() {
     const [filters, setFilters] = useState([])
@@ -11,6 +15,7 @@ export default function BountyFilter() {
     const [isLoadingFilters, setIsLoadingFilters] = useState(true)
     const [isLoadingCars, setIsLoadingCars] = useState(false)
 
+    //FETCHES USER FILTERS (I.E SAVED SEARCH PARAMETERS) FROM DJANGO BOUNTYFILTER VIEW AND SAVES THEM AS AN ARRAY IN FILTERS STATE. 'LOADING FILTERS' CONDITIONALLY RENDERED PENDING THE RESPONSE. 
     const getFilters = async () => {
         setIsLoadingFilters(true)
         try {
@@ -23,10 +28,12 @@ export default function BountyFilter() {
         }
     }
 
+    //QUERIES THE AUTODEV API FOR LISTINGS MATCHING EACH SEARCH FILTER. THE CALL TO AUTO DEV IS HANDLED IN THE DJANGO FILTERS VIEW. THIS FUNCTION CHANGES LOADING CARS STATE TO CONDITIONALLY RENDER STATUS TO SCREEN.
     const getCars = async () => {
         setIsLoadingCars(true)
         try {
             const results = {}
+            //FOR EACH FILTER IN FILTERS ARRAY, QUERY AUTODEV API. PARAMS ARE SENT VIA HTTP BODY IN A "GET" REQUEST.
             for (let filter of filters) {
                 const response = await api.get('autodev/search', {
                     params: {
@@ -35,46 +42,50 @@ export default function BountyFilter() {
                         year_min: filter.year_min,
                         price_max: filter.price_max,
                     }
-                });
-                results[filter.id] = response.data.records.slice(0, 4);
+                })
+            //EACH FILTER ID IS INSTANTIATED AS A KEY IN RESULTS OBJECT. THE VALUE IS THE FIRST 4 CARS RETURNED WHICH MATCH THE FILTER PARAMETERS.
+                results[filter.id] = response.data.records.slice(0, 4)
             }
-            setFilterResults(results);
+            //AFTER THE LOOP THROUGH EACH FILTER, THE RESULTS OBJECT IS NOW SET AS THE FILTERED RESULTS.
+            setFilterResults(results)
         } catch (error) {
-            console.error('Error fetching car data:', error);
+            console.error('Error fetching car data:', error)
         } finally {
             setIsLoadingCars(false)
         }
-    };
-
+    }
+//ON PAGE LOAD THIS CALLS THE GET FILTERS FUNCTION
     useEffect(() => {
-        getFilters();
-    }, []);
-
+        getFilters()
+    }, [])
+//IF GET FILTERS RETURNS AT LEAST ONE FILTER, THE GET CARS FUNCTION IS CALLED TO FETCH CARS FROM AUTODEV API. IF A NEW FILTER IS ADDED (OR DELETED) GETCARS IS CALLED AGAIN. 
+//THE CALL TO GETCARS UPON DELETION OF A FILTER IS UNDESIRED BEHAVIOR AS IT RELOADS ALL THE PERSISTING FILTERS. A FUTURE ITERATION OF CODE WILL CORRECT THIS.
     useEffect(() => {
         if (filters.length > 0) {
-            getCars();
+            getCars()
         }
-    }, [filters]);
+    }, [filters])
 
+//SENDS A DELETE REQUEST TO FILTER VIEW IN DJANGO THEN CALLS GETFILTERS TO RENDER REMAINING FILTERS. THIS HAS THE SAME UNDESIRABLE EFFECT OF MAKING A NEW API CALL TO EACH FILTER DESCRIBED ABOVE.
     const deleteFilter = async (filterId) => {
         try {
-            await api.delete(`users/bounty/bounty-filters/${filterId}`);
-            getFilters(); // Refresh the filters after deleting one
+            await api.delete(`users/bounty/bounty-filters/${filterId}`)
+            getFilters() 
         } catch (error) {
-            console.error('Error deleting filter:', error);
+            console.error('Error deleting filter:', error)
         }
     }
-
+//HANDLES 'ADD BOUNTY'(I.E. A NEW FILTER) BUTTON CLICK EVENT
     const handleSubmit = (e) => {
-        e.preventDefault();
-        newBounty()
-    };
-
+        e.preventDefault()
+        newFilter()
+    }
+//HANDLES 'DELETE'(I.E. REMOVE FILTER) BUTTON CLICK EVENT
     const handleDelete = (filterId) => {
         deleteFilter(filterId)
     }
-
-    const newBounty = async () => {
+//SENDS A POST REQUEST TO DJANGO FILTER VIEW TO CREATE A NEW FILTER INSTANCE FOR THE USER
+    const newFilter = async () => {
         try {
             await api.post('users/bounty/bounty-filters/', {
                 make,
@@ -82,38 +93,40 @@ export default function BountyFilter() {
                 year_min,
                 price_max,
             })
-            getFilters() // Refresh the filters after adding a new one
-            // Clear the form fields after successful submission
-            setMake('');
-            setModel('');
-            setMinYear('');
-            setPriceMax('');
+            getFilters() //NEW CALL MADE TO GET FILTERS SO THE NEW FILTER CAN BE RENDERED TO SCREEN
+            // EACH FORM FIELD IS RESET
+            setMake('')
+            setModel('')
+            setMinYear('')
+            setPriceMax('')
         } catch (error) {
             console.error('Error creating new bounty:', error)
         }
     }
 
+//THIS SWITCH STATEMENT REDUCED 4 FUNCTIONS INTO ONE. IT DYNAMICALLY UPDATES THE STATE FOR EACH OF THE FORM FIELDS ON THE PAGE.
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value } = e.target
         switch(name) {
             case 'make':
-                setMake(value);
-                break;
+                setMake(value)
+                break
             case 'model':
-                setModel(value);
-                break;
+                setModel(value)
+                break
             case 'year_min':
-                setMinYear(value);
-                break;
+                setMinYear(value)
+                break
             case 'price_max':
-                setPriceMax(value);
-                break;
+                setPriceMax(value)
+                break
         }
-    };
+    }
 
     return (
         <>
             <h1 className="text-2xl pt-6 pb-8 font-bold text-center text-blue-600 sm:text-3xl">Bounty List</h1>
+            {/*THIS IS A FORM TO SUBMIT A NEW BOUNTY/SEARCH FILTER*/}
             <form onSubmit={handleSubmit} className="mb-8 flex justify-center">
                 <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 max-w-4xl w-full">
                     <input
@@ -156,6 +169,7 @@ export default function BountyFilter() {
                     </button>
                 </div>
             </form>
+            {/*CONDITIONALLY RENDERS LOADING STATE TO SCREEN OR MAPS EACH FILTER CRITERIA TO SCREEN WITH A DELETE BUTTON */}
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 {isLoadingFilters ? (
@@ -172,7 +186,8 @@ export default function BountyFilter() {
                                     Delete
                                 </button>
                             </h2>
-                           
+            {/*CONDITIONALLY RENDERS LOADING STATE OR THE 4 CARS FROM THE FILTERED AUTO DEV API RESULTS. MOST, BUT NOT ALL RESULTS RETURN WITH A "CLICK OFF URL", ERROR HANDLING FOR NULL URLS IS REQUIRED*/}
+            {/*CURRENTLY, AT LEAST 3 OTHER COMPONENTS (SEARCH CARS, GARAGECARS, AND FEATUREDCARS) IMPLEMENT VERY SIMILAR CAR CARDS MAPPED IN SIMILAR FASHION. THIS HIGHLIGHTS THE NEED FOR A STANDARD CAR COMPONENT--FUTURE ENHANCEMENT*/}
                             {isLoadingCars ? (
                                 <p>Loading cars...</p>
                             ) : (

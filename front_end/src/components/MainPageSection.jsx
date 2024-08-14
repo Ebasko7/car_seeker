@@ -1,6 +1,9 @@
-import { LifebuoyIcon, NewspaperIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid';
+//THIS COMPONENT IS RENDERED WITHIN HOMEPAGE.JSX
 
+import { LifebuoyIcon, NewspaperIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
+//THE OBJECTS WITHIN THE BELOW CARDS ARRAY ARE EACH MAPPED TO A CARD FORMAT IN THE RETURN SECTION
+//THIS IS A TAILWIND COMPONENT
 const cards = [
   {
     name: 'Find',
@@ -17,11 +20,12 @@ const cards = [
     description: "The journey doesn't end when you find the perfect ride. Maintain your garage and build your collection of cars and trucks to show off, trade, or sell!",
     icon: NewspaperIcon,
   },
-];
+]
 
 export default function Example() {
   return (
     <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32 ">
+  {/*THIS VIDEO TAG RENDERS THE MOVING ROAD SEEN ON THE HOMEPAGE*/}
       <video
         autoPlay
         muted
@@ -70,5 +74,5 @@ export default function Example() {
         </div>
       </div>
     </div>
-  );
+  )
 }

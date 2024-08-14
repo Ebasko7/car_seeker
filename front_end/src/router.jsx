@@ -1,4 +1,3 @@
-// router.jsx
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import HomePage from "./pages/HomePage";
@@ -11,14 +10,15 @@ import SignupPage from "./pages/SignupPage";
 import VinDecoderPage from "./pages/VinDecoderPage";
 import { userConfirmation } from "./utilities.jsx";
 
-
+//REACT-ROUTER-DOM FUNCTION, WRAPS THE APPLICATION AND ENABLES ROUTING BETWEEN PAGES
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    //RUNS USERCONFIRMATION FUNCTION FROM UTILITIES.JSX BEFORE APP.JSX RENDERS.  
     loader: async () => {
-      const isAuthenticated = await userConfirmation();
-      return { isAuthenticated };
+      const isAuthenticated = await userConfirmation()
+      return { isAuthenticated }
     },
     children: [
       {
@@ -52,6 +52,6 @@ const router = createBrowserRouter([
     ],
     errorElement: <NotFoundPage/>
   },
-]);
+])
 
-export default router;
+export default router

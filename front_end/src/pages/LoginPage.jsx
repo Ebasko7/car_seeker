@@ -1,26 +1,32 @@
-import { useState } from "react";
-import { useOutletContext, Link } from "react-router-dom";
-import { userLogIn } from '../utilities.jsx';
+//THE LOGIN PAGE IS ONE OF TWO (ALONG WITH SIGNUP.JSX) PAGES ON A PUBLIC ROUTE.
+import { useState } from "react"
+import { useOutletContext, Link } from "react-router-dom"
+import { userLogIn } from '../utilities.jsx'
 
 const LogIn = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { setUser } = useOutletContext();
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
+  //USERSTATE CAN EITHER BE AUTHENTICATED OR NOT AUTHENTICATED. IF THE LOGIN FUNCTION IS SUCCESSFUL THE STATE OF USER IS UPDATED AT THE APP.JSX LEVEL. 
+  const { setUser } = useOutletContext()
+
+  //AYSNC FUNCTION CALLING ON THE USER LOGIN METHOD DEFINED IN UTILITIES.JSX. PERFORMS TOKEN AUTHENTICATION WITH DJANGO BACK END/USER APP.
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      const user = await userLogIn(email, password);
+      const user = await userLogIn(email, password)
       setUser(user)
      
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Login failed:", error)
       
     }
-  };
+  }
 
   return (
+  
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      {/*LOGIN FORM. THE HANDLE SUBMIT FUNCTION CALLS THE USER LOGIN FUNCTION. SET EMAIL AND SET PASSWORD ARE DYNAMICALLY UPDATED VIA ONCHANGE FIELDS */}
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
           alt="Car seeker logo"
@@ -81,6 +87,7 @@ const LogIn = () => {
         </form>
         <div className="mt-6 text-center">
           <h4 className="text-lg font-medium text-gray-900">OR</h4>
+          {/*LINK TO NEAR IDENTICAL SIGN UP PAGE THAT CALLS USER SIGN UP FUNCTION IN UTILITIES.JSX. THIS WILL BE MADE INTO ONE COMPONENT WITH TOGGLE STATE VICE A SEPARATE PAGE*/}
           <Link to="/signup" className="mt-2 block text-lg font-medium text-red-700 hover:text-red-800">
             Create an Account
           </Link>
