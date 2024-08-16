@@ -1,5 +1,5 @@
 //HEADER PERSISTS ACROSS ALL OTHER REACT PAGES, IT IS NOT A CHILD OF APP, IT EXISTS AT THE TOP LEVEL OF THE APPLICATION.
-'use client'
+
 import { useState } from 'react'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'

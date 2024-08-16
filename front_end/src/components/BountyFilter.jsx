@@ -1,5 +1,5 @@
 //A BOUNTY FILTER EQUATES TO A USER'S SAVED SEARCH PARAMETERS. THESE ARE EMPLOYED AS A COMPONENT ON BOUNTYPAGE.JSX. 0 OR MANY BOUNTY FILTERS MAY EXIST ON THE BOUNTY PAGE.
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 //CALLS TO THIS API--AN AXIOS INSTANCE--ARE DIRECTED TO DJANGO BACKEND.
 import { api } from '../utilities.jsx'
 
@@ -13,11 +13,8 @@ export default function BountyFilter() {
     const [isLoadingFilters, setIsLoadingFilters] = useState(true) // LOADING STATE FOR FILTERS
     const [loadingFilters, setLoadingFilters] = useState({}) // LOADING STATE FOR INDIVIDUAL FILTERS
 
-
-//USECALLBACK PREVENTS UN NECESSARY RE-RENDERS THROUGH MEMOIZATION (CACHING OF PREVIOUSLY CALCULATED VALUES)
-//GET FILTERS IS THE SAME FUNCTION INSTANCE FOR EACH FILTER INSTANCE CREATED. THIS IS A PERFORMANCE ENHANCEMENT THAT MAY NOT BE VISIBLE UNTIL A LARGE NUMBER OF FILTERS ARE CREATED.
-//THE FUNCTION FETCHES ALL FILTERS FOR THE USER
-    const getFilters = useCallback(async () => {
+    //THE FUNCTION FETCHES ALL FILTERS FOR THE USER
+    const getFilters = async () => {
         setIsLoadingFilters(true)
         try {
             const response = await api.get('users/bounty/bounty-filters/')
@@ -27,11 +24,12 @@ export default function BountyFilter() {
         } finally {
             setIsLoadingFilters(false)
         }
-    }, [])
+    }
 
-//FETCHES CARS FOR THE SPECIFIC FILTER. ADDS A FILTER ID: FILTER OBJECT KEY VALUE PAIR TO FILTERRESULTS
-    const getCars = useCallback(async (filter) => {
-//UPDATES THE LOADINGFILTERS STATE FOR A SPECIFIC FILTER TO TRUE
+    //FETCHES CARS FOR THE SPECIFIC FILTER. ADDS A FILTER ID: FILTER OBJECT KEY VALUE PAIR TO FILTERRESULTS
+    const getCars = async (filter) => {
+        //UPDATES THE LOADINGFILTERS STATE FOR A SPECIFIC FILTER TO TRUE
+        //FETCHES CARS FROM AUTO.DEV API
         setLoadingFilters(prev => ({ ...prev, [filter.id]: true }))
         try {
             const response = await api.get('autodev/search', {
@@ -52,14 +50,14 @@ export default function BountyFilter() {
             //UPDATES THE LOADINGFILTERS STATE FOR A SPECIFIC FILTER TO FALSE
             setLoadingFilters(prev => ({ ...prev, [filter.id]: false }))
         }
-    }, [])
+    }
 
-//FETCHES FILTERS ON COMPONENT MOUNT
+    //FETCHES FILTERS ON COMPONENT MOUNT
     useEffect(() => {
         getFilters()
-    }, [getFilters])
+    }, [])
 
-//FETCH CARS FOR EACH FILTER WHEN FILTERS CHANGE
+    //FETCH CARS FOR EACH FILTER WHEN FILTERS CHANGE
     useEffect(() => {
         filters.forEach(filter => {
             //ONLY CALL GETCARS FOR FILTERS WE DONT HAVE DATA FOR 
@@ -67,12 +65,37 @@ export default function BountyFilter() {
                 getCars(filter)
             }
         })
-    }, [filters, filterResults, getCars, loadingFilters])
+    }, [filters, filterResults, loadingFilters])
 
-//DELETES A SPECIFIC FILTER ON BACKEND AND TRACKS THE CHANGE IN STATE TO AVOID ANOTHER BACKEND CALL TO RENDER THE FILTERS AGAIN
+    //UPDATES A SPECIFIC FILTER ON BACKEND AND TRACKS THE CHANGE IN STATE
+    const updateFilter = async (filterId, method) => {
+        const filter = filters.find(f => f.id === filterId)
+        let newPriceMax = filter.price_max
+        if (method === 'add') {
+            newPriceMax += 5000
+        } else if (method === 'subtract' && newPriceMax - 5000 >= 0) {
+            newPriceMax -= 5000
+        }
+            
+        try {
+            const response = await api.put(`users/bounty/bounty-filters/${filterId}/`, {
+                price_max: newPriceMax
+            })
+            //UPDATES LOCAL STATE WITH RESPONSE DATA FROM SERVER
+            setFilters(prevFilters => prevFilters.map(f => 
+                f.id === filterId ? response.data : f
+            ))
+            //REFETCH CARS FOR THE UPDATED FILTER
+            getCars(response.data)
+        } catch (error) {
+            console.error('Unable to update price', error)
+        }
+    }
+
+    //DELETES A SPECIFIC FILTER ON BACKEND AND TRACKS THE CHANGE IN STATE TO AVOID ANOTHER API CALL
     const deleteFilter = async (filterId) => {
         try {
-            await api.delete(`users/bounty/bounty-filters/${filterId}`)
+            await api.delete(`users/bounty/bounty-filters/${filterId}/`)
             setFilters(prevFilters => prevFilters.filter(filter => filter.id !== filterId))
             setFilterResults(prevResults => {
                 const newResults = { ...prevResults }
@@ -89,18 +112,18 @@ export default function BountyFilter() {
         }
     }
 
-//HANDLES FORM SUBMISSION FOR A NEW FILTER
+    //HANDLES FORM SUBMISSION FOR A NEW FILTER
     const handleSubmit = (e) => {
         e.preventDefault()
         newFilter()
     }
 
-//HANDLES FILTER DELETION
+    //HANDLES FILTER DELETION
     const handleDelete = (filterId) => {
         deleteFilter(filterId)
     }
 
-//CREATES A NEW FILTER WHICH WILL BE STORED IN POSTGRES DB FOR THE USER
+    //CREATES A NEW FILTER WHICH WILL BE STORED IN POSTGRES DB FOR THE USER
     const newFilter = async () => {
         try {
             const response = await api.post('users/bounty/bounty-filters/', {
@@ -197,9 +220,21 @@ export default function BountyFilter() {
                                 {filter.make} {filter.model} (Year: {filter.year_min}+, Max Price: ${filter.price_max}) 
                                 <button 
                                     onClick={() => handleDelete(filter.id)}
-                                    className="inline-block rounded-md bg-red-600/80 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2"
+                                    className="inline-block rounded-md bg-red-600/80 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2"
                                 >
                                     Delete
+                                </button>
+                                <button 
+                                    onClick={() => updateFilter(filter.id, 'add')}
+                                    className="inline-block rounded-md bg-blue-600/80 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2"
+                                >
+                                    + Max
+                                </button>
+                                <button 
+                                    onClick={() => updateFilter(filter.id, 'subtract')}
+                                    className="inline-block rounded-md bg-blue-600/80 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-2"
+                                >
+                                    - Max
                                 </button>
                             </h2>
                             {/*CONDITIONALLY RENDERS LOADING STATE OR A MAPPING OF EACH FILTER'S RESULTS OR IF NO RESULTS, A "NO CARS FOUND" MESSAGE IS RENDERED*/}
