@@ -26,7 +26,7 @@ function Signup() {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
           alt="Car seeker logo??"
-          src="../src/assets/images/911_black.webp"
+          src="../public/images/911_black.webp"
           className="mx-auto h-13 w-auto"
         />
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">

@@ -33,7 +33,7 @@ export default function Example() {
         className="absolute inset-0 -z-10 h-full w-full object-cover"
         style={{ filter: 'grayscale(100%)' }}
       >
-        <source src="src/assets/images/road.mp4" type="video/mp4" />
+        <source src="./public/images/road.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       <div className="hidden sm:absolute sm:-top-10 sm:right-1/2 sm:-z-10 sm:mr-10 sm:block sm:transform-gpu sm:blur-3xl">
