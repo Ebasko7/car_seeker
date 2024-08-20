@@ -47,7 +47,7 @@ export default function Header({ user, setUser }) {
         <div className="flex-1 flex items-center justify-between">
           <Link to="/" className="flex items-center">
             <span className="sr-only">CarSeeker</span>
-            <img alt="CarSeeker logo" src="../public/images/wheel.png" className="h-20 w-auto" />
+            <img alt="CarSeeker logo" src="/images/wheel.png" className="h-20 w-auto" />
             <h1 className="text-4xl font-bold tracking-tight text-white ml-4">CarSeeker</h1>
           </Link>
         </div>
@@ -87,7 +87,7 @@ export default function Header({ user, setUser }) {
               <span className="sr-only">CarSeeker</span>
               <img
                 className="h-8 w-auto"
-                src="../public/images/wheel.png"
+                src="/images/wheel.png"
                 alt="CarSeeker"
               />
             </Link>
