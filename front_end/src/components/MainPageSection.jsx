@@ -25,17 +25,30 @@ const cards = [
 export default function Example() {
   return (
     <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32 ">
-  {/*THIS VIDEO TAG RENDERS THE MOVING ROAD SEEN ON THE HOMEPAGE*/}
-      <video
-        autoPlay
-        muted
-        loop
-        className="absolute inset-0 -z-10 h-full w-full object-cover"
-        style={{ filter: 'grayscale(100%)' }}
-      >
-        <source src="/images/road.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+      {/*THIS VIDEO TAG RENDERS THE MOVING ROAD SEEN ON THE HOMEPAGE*/}
+      <div className="hidden sm:block">
+        <video
+          autoPlay
+          muted
+          loop
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+          style={{ filter: 'grayscale(100%)' }}
+        >
+          <source src="/images/road.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      
+      {/* Static image for mobile devices */}
+      <div className="sm:hidden">
+        <img
+          src="/images/road-static.jpg"
+          alt="Road background"
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+          style={{ filter: 'grayscale(100%)' }}
+        />
+      </div>
+
       <div className="hidden sm:absolute sm:-top-10 sm:right-1/2 sm:-z-10 sm:mr-10 sm:block sm:transform-gpu sm:blur-3xl">
         <div
           style={{
