@@ -1,5 +1,4 @@
-//THIS COMPONENT IS RENDERED WITHIN HOMEPAGE.JSX
-
+import React, { useEffect, useState } from 'react';
 import { LifebuoyIcon, NewspaperIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 //THE OBJECTS WITHIN THE BELOW CARDS ARRAY ARE EACH MAPPED TO A CARD FORMAT IN THE RETURN SECTION
@@ -23,31 +22,44 @@ const cards = [
 ]
 
 export default function Example() {
+  const [isMobile, setIsMobile] = useState(true);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640); // 640px is the 'sm' breakpoint in Tailwind
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32 ">
       {/*THIS VIDEO TAG RENDERS THE MOVING ROAD SEEN ON THE HOMEPAGE*/}
-      <div className="hidden sm:block">
+      {!isMobile && (
         <video
           autoPlay
           muted
           loop
+          playsInline
           className="absolute inset-0 -z-10 h-full w-full object-cover"
           style={{ filter: 'grayscale(100%)' }}
         >
           <source src="/images/road.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-      </div>
+      )}
       
       {/* Static image for mobile devices */}
-      <div className="sm:hidden">
+      {isMobile && (
         <img
           src="/images/road-static.jpg"
           alt="Road background"
           className="absolute inset-0 -z-10 h-full w-full object-cover"
-          style={{ filter: 'grayscale(100%)' }}
         />
-      </div>
+      )}
 
       <div className="hidden sm:absolute sm:-top-10 sm:right-1/2 sm:-z-10 sm:mr-10 sm:block sm:transform-gpu sm:blur-3xl">
         <div
@@ -71,7 +83,14 @@ export default function Example() {
         <div className="mx-auto max-w-2xl lg:mx-0">
           <h2 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">CarSeeker</h2>
           <p className="mt-6 text-lg leading-8 text-gray-300">
-            The only car shopping platform you'll ever need.
+            {isMobile ? (
+              <>
+                The only car shopping platform<br />
+                you'll ever need.
+              </>
+            ) : (
+              "The only car shopping platform you'll ever need."
+            )}
           </p>
         </div>
         <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-6 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:gap-8">
