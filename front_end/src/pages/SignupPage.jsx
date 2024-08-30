@@ -1,4 +1,4 @@
-//THE SIGNUP PAGE IS ONE OF TWO (ALONG WITH LOGIN.JSX) PAGES ON A PUBLIC ROUTE.
+//THE SIGNUP PAGE IS ONE OF TWO (ALONG WITH LOGIN.JSX) PAGES ON A PUBLIC ROUTE  .
 import React from 'react'
 import { useState } from "react"
 import { Link } from "react-router-dom"
