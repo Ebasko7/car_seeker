@@ -1,30 +1,31 @@
 //THE LOGIN PAGE IS ONE OF TWO (ALONG WITH SIGNUP.JSX) PAGES ON A PUBLIC ROUTE  .
-import { useState } from "react"
-import { useOutletContext, Link } from "react-router-dom"
-import { userLogIn } from '../utilities.jsx'
+import { useState } from "react";
+import { useOutletContext, Link } from "react-router-dom";
+import { userLogIn } from "../utilities.jsx";
 
 const LogIn = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  //USERSTATE CAN EITHER BE AUTHENTICATED OR NOT AUTHENTICATED. IF THE LOGIN FUNCTION IS SUCCESSFUL THE STATE OF USER IS UPDATED AT THE APP.JSX LEVEL. 
-  const { setUser } = useOutletContext()
+  //USERSTATE CAN EITHER BE AUTHENTICATED OR NOT AUTHENTICATED. IF THE LOGIN FUNCTION IS SUCCESSFUL THE STATE OF USER IS UPDATED AT THE APP.JSX LEVEL.
+  const { setUser } = useOutletContext();
 
   //AYSNC FUNCTION CALLING ON THE USER LOGIN METHOD DEFINED IN UTILITIES.JSX. PERFORMS TOKEN AUTHENTICATION WITH DJANGO BACK END/USER APP.
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const user = await userLogIn(email, password)
-      setUser(user)
-     
+      const user = await userLogIn(email, password);
+      setUser(user);
     } catch (error) {
-      console.error("Login failed:", error)
-      
+      console.error("Login failed:", error);
+      setError(
+        "Please check your password and try again. If that fails, please create a new account."
+      );
     }
-  }
+  };
 
   return (
-  
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       {/*LOGIN FORM. THE HANDLE SUBMIT FUNCTION CALLS THE USER LOGIN FUNCTION. SET EMAIL AND SET PASSWORD ARE DYNAMICALLY UPDATED VIA ONCHANGE FIELDS */}
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -39,9 +40,14 @@ const LogIn = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        {error && ( // Display error message if it exists
+          <div className="mb-4 text-red-500 text-center">{error}</div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium leading-6 text-gray-900">
               Email address
             </label>
             <div className="mt-2">
@@ -59,7 +65,9 @@ const LogIn = () => {
 
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium leading-6 text-gray-900">
                 Password
               </label>
             </div>
@@ -79,8 +87,7 @@ const LogIn = () => {
           <div>
             <button
               type="submit"
-              className="flex w-full justify-center rounded-md bg-blue-600/80 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
+              className="flex w-full justify-center rounded-md bg-blue-600/80 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
               Log in
             </button>
           </div>
@@ -88,13 +95,15 @@ const LogIn = () => {
         <div className="mt-6 text-center">
           <h4 className="text-lg font-medium text-gray-900">OR</h4>
           {/*LINK TO NEAR IDENTICAL SIGN UP PAGE THAT CALLS USER SIGN UP FUNCTION IN UTILITIES.JSX. THIS WILL BE MADE INTO ONE COMPONENT WITH TOGGLE STATE VICE A SEPARATE PAGE*/}
-          <Link to="/signup" className="mt-2 block text-lg font-medium text-red-700 hover:text-red-800">
+          <Link
+            to="/signup"
+            className="mt-2 block text-lg font-medium text-red-700 hover:text-red-800">
             Create an Account
           </Link>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LogIn
+export default LogIn;
