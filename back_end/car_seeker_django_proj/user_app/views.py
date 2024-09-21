@@ -20,17 +20,29 @@ from datetime import datetime, timedelta
 
 class Sign_up(APIView):
     def post(self, request):
-        with transaction.atomic():
-            request.data["username"] = request.data["email"]
-            app_user = User.objects.create_user(**request.data)
-            Garage.objects.create(owner=app_user)
-            Bounty_list.objects.create(user=app_user)
-            token = Token.objects.create(user=app_user)
+        try:
+            with transaction.atomic():
+                request.data["username"] = request.data["email"]
+                app_user = User.objects.create_user(**request.data)
+                Garage.objects.create(owner=app_user)
+                Bounty_list.objects.create(user=app_user)
+                token = Token.objects.create(user=app_user)
 
-            return Response(
-                {"username": app_user.email, "token": token.key},
-                status=HTTP_201_CREATED,
-            )
+                life_time = datetime.now() + timedelta(days=7)
+                format_life_time = life_time.strftime("%a, %d %b %Y %H:%M:%S GMT")
+
+                _response = Response({"user": app_user.email}, status=HTTP_201_CREATED)
+                _response.set_cookie(
+                    key="token",
+                    value=token.key,
+                    httponly=True,
+                    secure=True,
+                    samesite="Lax",
+                    expires=format_life_time,
+                )
+                return _response
+        except:
+            return Response(e, status=HTTP_400_BAD_REQUEST)
 
 
 class Log_in(APIView):
